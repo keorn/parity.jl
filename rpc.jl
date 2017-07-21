@@ -1,4 +1,5 @@
 import Base.PipeEndpoint
+using Distributions
 # RPC config
 jsonrpcversion = "2.0"
 
@@ -86,6 +87,7 @@ function getauthor(address::String)
                  "0xf3b9d2c81f2b24b0fa0acaaa865b7d9ced5fc2fb" => "bitclubpool",
                  "0x6c7f03ddfdd8a37ca267c88630a4fee958591de0" => "alpereum",
                  "0xbcdfc35b86bedf72f0cda046a3c16829a2ef41d1" => "bw",
+                 "0xc0ea08a2d404d3172d2add29a45be56da40e2949" => "bw",
                  "0x727a42a8d67fcaa0ab81d46f1ee66bfc9b8789ac" => "beck_solo",
                  "0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5" => "nanopool",
                  "0x2a65aca4d5fc5b5c859090a6c34d164135398226" => "dwarf",
@@ -97,7 +99,11 @@ function getauthor(address::String)
                  "0xa42af2c70d316684e57aefcc6e393fecb1c7e84e" => "coinotron",
                  "0x1e9939daaad6924ad004c2560e90804164900341" => "ethfans",
                  "0x61c808d82a3ac53231750dadc13c777b59310bd9" => "f2pool",
-                 "0x30b6ef1ea77dc4e114c6a7865869b932503f4e6d" => "DragonMine")
+                 "0x30b6ef1ea77dc4e114c6a7865869b932503f4e6d" => "DragonMine",
+                 "0xdc3f366882d53c6d5eb808018acfd1cfaa7ee455" => "MinerGate",
+                 "0x009dd89afaf79ffced5e252ef4cb2cfd000d76e7" => "Eth-x.digger.ws",
+                 "0xb2930b35844a230f00e51431acae96fe543a0347" => "Miningpoolhub_1",
+                 "0xcab27fc3916e28663f36fc6dcdbe087008f9c5a4" => "Myetherpool")
     get(pools, address, address)
 end
 getauthors!(blocks::Vector{Block}) = for b in blocks
