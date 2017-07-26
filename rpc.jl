@@ -1,5 +1,5 @@
 import Base.PipeEndpoint
-using Distributions, JSON
+using JSON
 # RPC config
 jsonrpcversion = "2.0"
 

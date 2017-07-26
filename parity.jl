@@ -1,5 +1,7 @@
 include("rpc.jl")
 
+using Distributions
+
 # Network utilities
 function connectnodes(nodes::Vector{PipeEndpoint})
     for node0 in nodes
