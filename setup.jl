@@ -1,2 +1,2 @@
-Pkg.add("JSON")
-Pkg.add("Distributions")
+Pkg.update()
+[Pkg.add(p) for p in ["JSON", "Distributions"]]

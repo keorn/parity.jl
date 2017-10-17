@@ -3,7 +3,7 @@ include("rpc.jl")
 using Distributions
 
 # Network utilities
-function connectnodes(nodes::Vector{PipeEndpoint})
+function connectnodes(nodes::Vector{RpcEndpoint})
     for node0 in nodes
         enode = rpc(node0, "parity_enode")
         for node1 in nodes
@@ -11,7 +11,7 @@ function connectnodes(nodes::Vector{PipeEndpoint})
         end
     end
 end
-function disconnectnodes(nodes::Vector{PipeEndpoint})
+function disconnectnodes(nodes::Vector{RpcEndpoint})
     for node0 in nodes
         enode = rpc(node0, "parity_enode")
         for node1 in nodes
@@ -23,10 +23,12 @@ end
 
 # Analysis utilities
 # Block retrieval
-latestblock(ipc::PipeEndpoint) = rpc(ipc, "eth_getBlockByNumber", "latest", false)
-function latestblocks(ipc::PipeEndpoint, n::Int, txs::Bool = false, step::Int = 1)
-    initial = latestblock(ipc)["number"]
-    (rpc(ipc, "eth_getBlockByNumber", encode(block), false) for block in initial-n*step+1:step:initial)
+latestblock(io::RpcEndpoint) = rpc(io, "eth_getBlockByNumber", "latest", false)
+function blocks(io::RpcEndpoint, initial::Int, n::Int, txs::Bool = false, step::Int = 1)
+	(rpc(io, "eth_getBlockByNumber", encode(block), txs) for block in initial-n*step+1:step:initial)
+end
+function latestblocks(io::RpcEndpoint, n::Int, txs::Bool = false, step::Int = 1)
+	blocks(io, latestblock(io)["number"], n, txs, step)
 end
 Block = Dict{String, Any}
 # Block time analysis

@@ -1,4 +1,4 @@
-include("parity.jl")
+include("../parity.jl")
 
 ipc = connect(homedir() * "/.local/share/io.parity.ethereum/jsonrpc.ipc")
 
