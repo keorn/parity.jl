@@ -24,11 +24,11 @@ end
 # Analysis utilities
 # Block retrieval
 latestblock(io::RpcEndpoint) = rpc(io, "eth_getBlockByNumber", "latest", false)
-function blocks(io::RpcEndpoint, initial::Int, n::Int, txs::Bool = false, step::Int = 1)
+function fetchblocks(io::RpcEndpoint, initial::Int, n::Int, txs::Bool = false, step::Int = 1)
 	(rpc(io, "eth_getBlockByNumber", encode(block), txs) for block in initial-n*step+1:step:initial)
 end
 function latestblocks(io::RpcEndpoint, n::Int, txs::Bool = false, step::Int = 1)
-	blocks(io, latestblock(io)["number"], n, txs, step)
+	fetchblocks(io, latestblock(io)["number"], n, txs, step)
 end
 Block = Dict{String, Any}
 # Block time analysis
