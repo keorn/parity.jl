@@ -7,4 +7,4 @@ param_maker(nonce::String) = rpc(io, "eth_signTransaction", Dict(
   "value" => "0x0",
   "nonce" => nonce
 ))
-generate_corpus("eth_sendRawTransaction", param_maker, 100, "basic")
+generate_corpus("eth_sendRawTransaction", param_maker, "basic")

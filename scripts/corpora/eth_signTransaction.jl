@@ -6,4 +6,4 @@ param_maker(nonce::String) = Dict(
   "value" => "0x0",
   "nonce" => nonce
 )
-generate_corpus("eth_signTransaction", param_maker, 100, "basic")
+generate_corpus("eth_signTransaction", param_maker, "basic")
