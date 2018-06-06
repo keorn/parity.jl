@@ -74,8 +74,8 @@ MINING_POOLS = Dict("0x68795c4aa09d6f4ed3e5deddf8c2ad3049a601da" => "coinmine",
 function getauthor(address::String)
     get(MINING_POOLS, address, address)
 end
-function markauthor!(b::Block)
-  b["author"] = getauthor(b["author"])
+function markminer!(b::Block)
+  b["miner"] = getauthor(b["miner"])
   b
 end
-latestrichblocks(args...) = (markauthor!(markclient!(b)) for b in latestblocks(args...))
+latestrichblocks(args...) = (markminer!(markclient!(b)) for b in latestblocks(args...))
