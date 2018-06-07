@@ -4,10 +4,10 @@ ipc = connect(homedir() * "/.local/share/io.parity.ethereum/jsonrpc.ipc")
 
 bcs = latestrichblocks(ipc, 1000, false, 5)
 
-authors = unique([b["author"] for b in bcs])
+miners = unique([b["miner"] for b in bcs])
 shares = []
-for author in authors
-    blocks = collect(filter(b->b["author"]==author, bcs))
-    push!(shares, [author, length(blocks), length(filter(b->b["client"]=="parity", blocks))])
+for miner in miners
+    blocks = collect(filter(b->b["miner"]==miner, bcs))
+    push!(shares, [miner, length(blocks), length(filter(b->b["client"]=="parity", blocks))])
 end
 writecsv("mined_blocks.csv", shares)
