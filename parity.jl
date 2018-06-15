@@ -23,10 +23,10 @@ end
 # Block retrieval
 latestblock(io::RpcEndpoint) = rpc(io, "eth_getBlockByNumber", "latest", false)
 function fetchblocks(io::RpcEndpoint, initial::Int, n::Int, txs::Bool = false, step::Int = 1)
-	(rpc(io, "eth_getBlockByNumber", encode(block), txs) for block in initial-n*step+1:step:initial)
+  (rpc(io, "eth_getBlockByNumber", encode(block), txs) for block in initial-n*step+1:step:initial)
 end
 function latestblocks(io::RpcEndpoint, n::Int, txs::Bool = false, step::Int = 1)
-	fetchblocks(io, latestblock(io)["number"], n, txs, step)
+  fetchblocks(io, latestblock(io)["number"], n, txs, step)
 end
 Block = Dict{String, Any}
 # Block time analysis
@@ -63,17 +63,21 @@ MINING_POOLS = Dict("0x68795c4aa09d6f4ed3e5deddf8c2ad3049a601da" => "coinmine",
                     "0xa42af2c70d316684e57aefcc6e393fecb1c7e84e" => "coinotron",
                     "0x1e9939daaad6924ad004c2560e90804164900341" => "ethfans",
                     "0x61c808d82a3ac53231750dadc13c777b59310bd9" => "f2pool",
-                    "0x829bd824b016326a401d083b33d092293333a830" => "f2pool",
+                    "0x829bd824b016326a401d083b33d092293333a830" => "f2pool2",
                     "0x30b6ef1ea77dc4e114c6a7865869b932503f4e6d" => "DragonMine",
                     "0xdc3f366882d53c6d5eb808018acfd1cfaa7ee455" => "MinerGate",
                     "0x009dd89afaf79ffced5e252ef4cb2cfd000d76e7" => "Eth-x.digger.ws",
                     "0xb2930b35844a230f00e51431acae96fe543a0347" => "Miningpoolhub_1",
-                    "0xcab27fc3916e28663f36fc6dcdbe087008f9c5a4" => "Myetherpool")
+                    "0xcab27fc3916e28663f36fc6dcdbe087008f9c5a4" => "Myetherpool",
+                    "0x52e44f279f4203dcf680395379e5f9990a69f13c" => "bw",
+                    "0x9435d50503aee35c8757ae4933f7a0ab56597805" => "waterhole",
+                    "0xe4bdced60430a90f31dba03524dd5d15a2670649" => "xnpool",
+                    "0x5a0b54d5dc17e0aadc383d2db43b0a0d3e029c4c" => "Sparkpool")
 function getauthor(address::String)
     get(MINING_POOLS, address, address)
 end
-function markauthor!(b::Block)
-  b["author"] = getauthor(b["author"])
+function markminer!(b::Block)
+  b["miner"] = getauthor(b["miner"])
   b
 end
-latestrichblocks(args...) = (markauthor!(markclient!(b)) for b in latestblocks(args...))
+latestrichblocks(args...) = (markminer!(markclient!(b)) for b in latestblocks(args...))

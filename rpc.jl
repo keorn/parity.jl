@@ -8,7 +8,7 @@ const RpcEndpoint = Union{IO, String}
 # Query encoding
 rpcdict(method, params...) = Dict("jsonrpc"=>jsonrpcversion, "method"=>method, "params"=>params, "id"=>rand(1:10000))
 rpcjson(method, params...) = JSON.json(rpcdict(method, params...))
-encode(h::Integer) = string("0x", hex(h))
+encode(h::Integer) = string("0x", string(h, base=16))
 
 # IPC request
 function rpcraw(io::IO, rpcjson::String)
@@ -26,7 +26,7 @@ function rpcrequest(io::RpcEndpoint, method::String, params...)
 end
 
 # Output decoding
-type Empty end # Fixes Dict iteration
+struct Empty end # Fixes Dict iteration
 decode(v::Nothing) = Empty
 decode(b::Bool) = b
 decode(s::String) = try parse(Int64, s) catch _ s end

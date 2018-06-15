@@ -1,14 +1,18 @@
 include("../parity.jl")
+using DelimitedFiles
 
 endpoint = "https://mainnet.infura.io/oFwALIV7IBHjqixPObYx"
+history = 400
 
-bcs = collect(latestrichblocks(endpoint, 1, false, 1))
+bcs = collect(latestrichblocks(endpoint, history, false, 4))
 
-authors = unique([b["author"] for b in bcs])
+miners = unique([b["miner"] for b in bcs])
 shares = []
-for author in authors
-	println("Looking at: ", author)
-	blocks = collect(filter(b->b["author"]==author, bcs))
-	push!(shares, [author, length(blocks), length(filter(b->b["client"]=="parity", blocks))])
+for miner in miners
+    blocks = collect(filter(b->b["miner"]==miner, bcs))
+    push!(shares, [miner, length(blocks), length(filter(b->b["client"]=="parity", blocks))])
 end
-writecsv("mining_shares.csv", shares)
+push!(shares, ["TOTAL", length(bcs), length(filter(b->b["client"]=="parity", bcs))])
+
+# Write out in lines: miner,all blocks,parity blocks
+writedlm("mining_shares.csv", shares, ',')
