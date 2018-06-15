@@ -1,7 +1,5 @@
 include("rpc.jl")
 
-using Distributions
-
 # Network utilities
 function connectnodes(nodes::Vector{RpcEndpoint})
     for node0 in nodes
@@ -37,8 +35,8 @@ blocktimes(blocks::Vector{Block}) = blocktimes([b["timestamp"] for b in blocks])
 # Client analysis
 PARITY_DIVISOR = 37
 function markclient!(block::Block)
-  mistakedist = Bernoulli(1/PARITY_DIVISOR)
-  if block["gasLimit"]%PARITY_DIVISOR == 0 && rand(mistakedist) == 0
+  isnotgeth = rand(1:PARITY_DIVISOR) != 0
+  if block["gasLimit"]%PARITY_DIVISOR == 0 && isnotgeth
     block["client"]="parity"
   else
     block["client"]="geth"

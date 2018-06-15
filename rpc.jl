@@ -1,5 +1,5 @@
-import Base.IO
-using JSON, Requests
+import Base.IO, HTTP
+using JSON
 # RPC config
 jsonrpcversion = "2.0"
 
@@ -10,22 +10,24 @@ rpcdict(method, params...) = Dict("jsonrpc"=>jsonrpcversion, "method"=>method, "
 rpcjson(method, params...) = JSON.json(rpcdict(method, params...))
 encode(h::Integer) = string("0x", hex(h))
 
-# IPC requests
+# IPC request
 function rpcraw(io::IO, rpcjson::String)
     write(io, rpcjson)
     flush(io)
     readavailable(io)
 end
+# HTTP request
 function rpcraw(http::String, rpcjson::String)
-	post(http, data = rpcjson, headers=Dict("Content-Type"=>"application/json"))
+  HTTP.post(http, Dict("Content-Type"=>"application/json"), rpcjson)
 end
+
 function rpcrequest(io::RpcEndpoint, method::String, params...)
-	rpcraw(io, rpcjson(method, params...))
+  rpcraw(io, rpcjson(method, params...))
 end
 
 # Output decoding
 type Empty end # Fixes Dict iteration
-decode(v::Void) = Empty
+decode(v::Nothing) = Empty
 decode(b::Bool) = b
 decode(s::String) = try parse(Int64, s) catch _ s end
 decode(n::Int) = n
@@ -37,9 +39,8 @@ function parseresult(streamout::Vector{UInt8})
     out = JSON.parse(String(streamout))
     decode(get(out, "result", out))
 end
-function parseresult(response::HttpCommon.Response)
-	out = Requests.json(response)
-	decode(get(out, "result", out))
+function parseresult(response::HTTP.Response)
+  parseresult(response.body)
 end
 function rpc(io::RpcEndpoint, method::String, params...)
     parseresult(rpcrequest(io, method, params...))
